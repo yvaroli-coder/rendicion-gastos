@@ -121,9 +121,7 @@
     <div class="logo-divider"></div>
     <span class="logo-subtitle">Viáticos</span>
   </div>
-  <div style="display:flex;align-items:center;gap:16px">
-    <a href="index.html" class="back-link">← Volver al inicio</a>
-  </div>
+  <a href="index.html" class="back-link" style="margin-right:16px">← Volver al inicio</a>
 </header>
 
 <div class="app-body">
@@ -132,58 +130,36 @@
     <button class="tab-btn" onclick="switchTab('historial',this)">Mis rendiciones</button>
   </div>
 
-  <!-- NUEVA -->
   <div id="tab-nueva">
-    <div class="alert">
-      <span>ℹ️</span>
-      <span>Completá los datos del viaje, cargá cada gasto y adjuntá los comprobantes. Administración lo revisará y te notificará.</span>
-    </div>
-
-    <!-- Datos del viajero -->
+    <div class="alert"><span>ℹ️</span><span>Completá los datos del viaje, cargá cada gasto y adjuntá los comprobantes. Administración lo revisará.</span></div>
     <div class="card">
       <div class="card-title"><div class="icon">🧳</div> Datos del viaje</div>
       <div class="form-grid cols-3">
         <div class="form-group"><label>Nombre y apellido</label><input type="text" id="v_nombre" placeholder="Ej: Juan García"></div>
         <div class="form-group"><label>Área de imputación</label>
-          <select id="v_area">
-            <option value="">— Seleccioná —</option>
-            <option>Comercial</option><option>Administración</option><option>Logística</option>
-            <option>Marketing</option><option>Operaciones</option><option>Gerencia</option><option>Otro</option>
-          </select>
+          <select id="v_area"><option value="">— Seleccioná —</option><option>Comercial</option><option>Administración</option><option>Logística</option><option>Marketing</option><option>Operaciones</option><option>Gerencia</option><option>Otro</option></select>
         </div>
         <div class="form-group"><label>Fecha(s) de viaje</label><input type="text" id="v_fechas" placeholder="Ej: 01/06 al 04/06"></div>
       </div>
       <div class="form-group" style="margin-top:14px"><label>Motivo del viaje</label><input type="text" id="v_motivo" placeholder="Ej: Visita clientes Rosario"></div>
     </div>
 
-    <!-- Gastos -->
     <div class="card">
       <div class="card-title"><div class="icon">📋</div> Detalle de gastos</div>
-      <div id="vGastosHeader" class="gasto-header" style="display:none">
-        <span>Fecha</span><span>Concepto</span><span>Importe</span><span>Facturado a</span><span>Método</span><span>Comentarios</span><span></span>
-      </div>
+      <div id="vGastosHeader" class="gasto-header" style="display:none"><span>Fecha</span><span>Concepto</span><span>Importe</span><span>Facturado a</span><span>Método</span><span>Comentarios</span><span></span></div>
       <div id="vGastosList"></div>
-      <div id="vTotalRow" class="total-row" style="display:none">
-        <span class="total-label">Total gastos:</span><span class="total-amount" id="vTotalARS">$0</span>
-      </div>
+      <div id="vTotalRow" class="total-row" style="display:none"><span class="total-label">Total:</span><span class="total-amount" id="vTotalARS">$0</span></div>
       <div style="border-top:1.5px solid var(--gray-100);margin-top:14px;padding-top:16px">
         <div style="font-size:13px;font-weight:700;color:var(--gray-600);margin-bottom:10px">Agregar gasto</div>
         <div class="form-grid cols-3">
           <div class="form-group"><label>Fecha</label><input type="date" id="vg_fecha"></div>
-          <div class="form-group"><label>Concepto</label><input type="text" id="vg_concepto" placeholder="Ej: Almuerzo, Uber, Hotel"></div>
+          <div class="form-group"><label>Concepto</label><input type="text" id="vg_concepto" placeholder="Ej: Almuerzo, Uber"></div>
           <div class="form-group"><label>Importe (ARS)</label><input type="number" id="vg_importe" placeholder="0.00" min="0" step="0.01"></div>
           <div class="form-group"><label>Facturado a</label>
-            <select id="vg_facturado">
-              <option value="Granger S.A.">Granger S.A.</option>
-              <option value="Consumidor Final">Consumidor Final</option>
-              <option value="Sin factura">Sin factura</option>
-            </select>
+            <select id="vg_facturado"><option value="Granger S.A.">Granger S.A.</option><option value="Consumidor Final">Consumidor Final</option><option value="Sin factura">Sin factura</option></select>
           </div>
           <div class="form-group"><label>Método</label>
-            <select id="vg_metodo">
-              <option value="REINTEGRO">Reintegro (gasto propio)</option>
-              <option value="ADELANTO">Adelanto empresa</option>
-            </select>
+            <select id="vg_metodo"><option value="REINTEGRO">Reintegro (gasto propio)</option><option value="ADELANTO">Adelanto empresa</option></select>
           </div>
           <div class="form-group"><label>Link de factura (opcional)</label><input type="text" id="vg_link" placeholder="https://..."></div>
         </div>
@@ -192,34 +168,29 @@
       </div>
     </div>
 
-    <!-- Vehículo propio -->
     <div class="card">
       <div class="card-title"><div class="icon">🚗</div> Vehículo propio (opcional)</div>
-      <p style="font-size:13px;color:var(--gray-600);margin-bottom:14px">Completá solo si usaste tu vehículo personal para el viaje.</p>
+      <p style="font-size:13px;color:var(--gray-600);margin-bottom:14px">Completá solo si usaste tu vehículo personal.</p>
       <div class="form-grid">
-        <div class="form-group"><label>Cantidad de kilómetros</label><input type="number" id="v_km" placeholder="0" min="0" step="1" oninput="calcKm()"></div>
+        <div class="form-group"><label>Kilómetros</label><input type="number" id="v_km" placeholder="0" min="0" oninput="calcKm()"></div>
         <div class="form-group"><label>Valor por km (ARS)</label><input type="number" id="v_valorKm" value="501.05" step="0.01" oninput="calcKm()"></div>
       </div>
       <div id="kmResult" style="display:none;margin-top:12px;padding:10px 14px;background:var(--gray-50);border-radius:6px;border:1.5px solid var(--gray-200)">
         <span style="font-size:13px;color:var(--gray-600)">Importe por kilometraje: </span>
-        <span id="kmImporte" style="font-size:15px;font-weight:800;color:var(--black)">$0</span>
+        <span id="kmImporte" style="font-size:15px;font-weight:800">$0</span>
       </div>
     </div>
 
-    <!-- Adjunto -->
     <div class="card">
       <div class="card-title"><div class="icon">📎</div> Adjuntar comprobantes (opcional)</div>
-      <p style="font-size:13px;color:var(--gray-600);margin-bottom:14px">Adjuntá tickets, facturas u otros comprobantes. Podés subir un PDF con todo junto.</p>
+      <p style="font-size:13px;color:var(--gray-600);margin-bottom:14px">Adjuntá tickets, facturas u otros comprobantes. Máx. 5MB.</p>
       <div class="upload-zone" id="vUploadZone" onclick="document.getElementById('vFileInput').click()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleVDrop(event)">
-        <div class="upload-icon">📎</div>
-        <p><strong>Hacé clic</strong> o arrastrá el archivo aquí</p>
-        <p style="font-size:11px;margin-top:4px;color:var(--gray-400)">Opcional — PDF, JPG o PNG — máx. 10MB</p>
+        <div class="upload-icon">📎</div><p><strong>Hacé clic</strong> o arrastrá el archivo aquí</p>
+        <p style="font-size:11px;margin-top:4px;color:var(--gray-400)">Opcional — PDF, JPG o PNG — máx. 5MB</p>
       </div>
       <input type="file" id="vFileInput" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleVFileInput(this)">
       <div id="vFilePreview" style="display:none" class="file-preview">
-        <span style="font-size:20px">📄</span>
-        <span class="file-name" id="vFileName"></span>
-        <span class="file-size" id="vFileSize"></span>
+        <span style="font-size:20px">📄</span><span class="file-name" id="vFileName"></span><span class="file-size" id="vFileSize"></span>
         <button class="remove-file" onclick="removeVFile()">✕</button>
       </div>
     </div>
@@ -229,81 +200,67 @@
       <textarea id="vObs" placeholder="Cualquier aclaración adicional..."></textarea>
     </div>
 
+    <div id="vSendingMsg" style="display:none;text-align:center;padding:12px;font-size:13px;color:var(--gray-600)">⏳ Enviando rendición...</div>
     <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:8px">
       <button class="btn btn-ghost" onclick="limpiarVForm()">Limpiar</button>
-      <button class="btn btn-primary" onclick="enviarViatico()">✓ Enviar rendición</button>
+      <button class="btn btn-primary" id="vBtnEnviar" onclick="enviarViatico()">✓ Enviar rendición</button>
     </div>
   </div>
 
-  <!-- HISTORIAL -->
   <div id="tab-historial" style="display:none">
     <div class="form-group" style="max-width:300px;margin-bottom:20px">
       <label>Buscar mis rendiciones</label>
-      <input type="text" id="buscarNombre" placeholder="Escribí tu nombre..." oninput="renderVHistorial()">
+      <input type="text" id="buscarNombre" placeholder="Escribí tu nombre..." oninput="filtrarHistorial()">
     </div>
-    <div id="vHistorialContainer"></div>
+    <div id="vHistorialContainer"><div class="empty-state"><div class="empty-icon">⏳</div><p>Cargando...</p></div></div>
   </div>
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
-<script>
 
-const STORAGE_KEY = 'granger_rendiciones_v2';
-let rendiciones = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-function saveRendiciones() { localStorage.setItem(STORAGE_KEY, JSON.stringify(rendiciones)); }
-function reloadRendiciones() { rendiciones = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-function fmt(n) { return Number(n).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function formatDate(str) { if(!str)return''; const[y,m,d]=str.split('-'); return `${d}/${m}/${y}`; }
-function formatDatetime(iso) { const d=new Date(iso); return d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); }
-function formatFileSize(b) { if(b<1024)return b+' B'; if(b<1048576)return(b/1024).toFixed(1)+' KB'; return(b/1048576).toFixed(1)+' MB'; }
-function badgeHTML(estado) {
-  const map={'pendiente':['badge-pending','● Pendiente'],'aprobado':['badge-approved','● Aprobado'],'con consulta':['badge-consulta','● Con consulta']};
-  const[cls,label]=map[estado]||['badge-pending',estado]; return `<span class="badge ${cls}">${label}</span>`;
-}
-function showToast(msg,type){ const c=document.getElementById('toastContainer'); const t=document.createElement('div'); t.className='toast '+(type||''); t.textContent=msg; c.appendChild(t); setTimeout(()=>t.remove(),3200); }
-function openBlob(rendicionId) {
-  const r=rendiciones.find(x=>String(x.id)===String(rendicionId));
-  if(!r||!r.adjunto||!r.adjunto.data){showToast('No hay archivo disponible','error');return;}
-  try { const by=atob(r.adjunto.data.split(',')[1]); const ab=new ArrayBuffer(by.length); const ia=new Uint8Array(ab); for(let i=0;i<by.length;i++)ia[i]=by.charCodeAt(i); const blob=new Blob([ab],{type:r.adjunto.type}); const url=URL.createObjectURL(blob); window.open(url,'_blank'); setTimeout(()=>URL.revokeObjectURL(url),10000); } catch(e){showToast('Error al abrir','error');}
-}
-function adjuntoHTML(r) {
-  if(!r.adjunto) return '<span style="color:var(--gray-400)">Sin adjunto</span>';
-  if(!r.adjunto.data) return `📎 ${r.adjunto.name}`;
-  return `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-    <span style="font-weight:600">📎 ${r.adjunto.name}</span>
-    <span style="font-size:11px;color:var(--gray-400)">${formatFileSize(r.adjunto.size)}</span>
-    <a href="${r.adjunto.data}" download="${r.adjunto.name}" style="font-size:12px;font-weight:600;text-decoration:underline;color:var(--black)">⬇ Descargar</a>
-    ${r.adjunto.type==='application/pdf'?`<button onclick="openBlob('${r.id}')" style="font-size:12px;background:none;border:none;cursor:pointer;font-weight:600;text-decoration:underline;padding:0">🔍 Ver PDF</button>`:''}
-    ${r.adjunto.type&&r.adjunto.type.startsWith('image/')?`<br><img src="${r.adjunto.data}" style="max-width:100%;max-height:220px;border-radius:6px;margin-top:8px;border:1px solid var(--gray-200)"/>`:''}
-  </div>`;
-}
-function handleFileUpload(inputEl,callback) {
-  const file=inputEl.files[0]; if(!file)return;
-  if(file.size>10*1024*1024){showToast('El archivo supera los 10MB','error');return;}
-  const reader=new FileReader(); reader.onload=e=>callback({name:file.name,size:file.size,type:file.type,data:e.target.result}); reader.readAsDataURL(file);
-}
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
+import { getFirestore, collection, addDoc, doc, updateDoc, orderBy, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
 
-let vGastos=[], vAttachedFile=null;
+const firebaseConfig = {
+  apiKey: "AIzaSyCFHIU_4O-NiwFccMqZafLbRWndXmMBjX8",
+  authDomain: "rendicion-gastos-6a46c.firebaseapp.com",
+  projectId: "rendicion-gastos-6a46c",
+  storageBucket: "rendicion-gastos-6a46c.firebasestorage.app",
+  messagingSenderId: "9733179935",
+  appId: "1:9733179935:web:815a8e5ec56bf711bc232a"
+};
 
-function switchTab(tab,btn){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let vGastos=[], vAttachedFile=null, todasRendiciones=[], unsubscribe=null;
+
+function fmt(n){return Number(n).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function formatDate(str){if(!str)return'';const[y,m,d]=str.split('-');return `${d}/${m}/${y}`;}
+function formatDatetime(iso){const d=new Date(iso);return d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});}
+function formatFileSize(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB';}
+function badgeHTML(estado){const map={'pendiente':['badge-pending','● Pendiente'],'aprobado':['badge-approved','● Aprobado'],'con consulta':['badge-consulta','● Con consulta']};const[cls,label]=map[estado]||['badge-pending',estado];return `<span class="badge ${cls}">${label}</span>`;}
+function showToast(msg,type){const c=document.getElementById('toastContainer');const t=document.createElement('div');t.className='toast '+(type||'');t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3200);}
+
+window.switchTab=function(tab,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
   document.getElementById('tab-nueva').style.display=tab==='nueva'?'':'none';
   document.getElementById('tab-historial').style.display=tab==='historial'?'':'none';
-  if(tab==='historial')renderVHistorial();
-}
+  if(tab==='historial')iniciarHistorial();
+};
 
-function calcKm(){
+window.calcKm=function(){
   const km=parseFloat(document.getElementById('v_km').value)||0;
   const val=parseFloat(document.getElementById('v_valorKm').value)||0;
-  const total=km*val;
   document.getElementById('kmResult').style.display=km>0?'':'none';
-  document.getElementById('kmImporte').textContent='$'+fmt(total);
-}
+  document.getElementById('kmImporte').textContent='$'+fmt(km*val);
+};
 
-function agregarVGasto(){
-  const fecha=document.getElementById('vg_fecha').value, concepto=document.getElementById('vg_concepto').value.trim(),
-    importe=parseFloat(document.getElementById('vg_importe').value), facturado=document.getElementById('vg_facturado').value,
-    metodo=document.getElementById('vg_metodo').value, link=document.getElementById('vg_link').value.trim(),
+window.agregarVGasto=function(){
+  const fecha=document.getElementById('vg_fecha').value,concepto=document.getElementById('vg_concepto').value.trim(),
+    importe=parseFloat(document.getElementById('vg_importe').value),facturado=document.getElementById('vg_facturado').value,
+    metodo=document.getElementById('vg_metodo').value,link=document.getElementById('vg_link').value.trim(),
     comentarios=document.getElementById('vg_comentarios').value.trim();
   if(!fecha){showToast('Ingresá la fecha','error');return;}
   if(!concepto){showToast('Ingresá el concepto','error');return;}
@@ -312,68 +269,72 @@ function agregarVGasto(){
   renderVGastos();
   ['vg_fecha','vg_concepto','vg_importe','vg_link','vg_comentarios'].forEach(id=>document.getElementById(id).value='');
   showToast('Gasto agregado ✓','success');
-}
+};
 
-function eliminarVGasto(id){vGastos=vGastos.filter(g=>g.id!==id);renderVGastos();}
+window.eliminarVGasto=function(id){vGastos=vGastos.filter(g=>g.id!==id);renderVGastos();};
 
 function renderVGastos(){
-  const list=document.getElementById('vGastosList'), header=document.getElementById('vGastosHeader'), totalRow=document.getElementById('vTotalRow');
+  const list=document.getElementById('vGastosList'),header=document.getElementById('vGastosHeader'),totalRow=document.getElementById('vTotalRow');
   if(!vGastos.length){list.innerHTML='<div style="padding:20px;text-align:center;color:var(--gray-400);font-size:13px">Todavía no agregaste gastos.</div>';header.style.display='none';totalRow.style.display='none';return;}
-  header.style.display='';totalRow.style.display='';
-  let total=0;
-  list.innerHTML=vGastos.map(g=>{
-    total+=g.importe;
-    const metodoLabel=g.metodo==='REINTEGRO'?'🔄 Reintegro':'💰 Adelanto';
-    return `<div class="gasto-row">
-      <span style="font-size:12px;color:var(--gray-600)">${formatDate(g.fecha)}</span>
-      <span><strong>${g.concepto}</strong>${g.comentarios?`<br><span style="font-size:11px;color:var(--gray-400)">${g.comentarios}</span>`:''}</span>
-      <span style="font-weight:700">$${fmt(g.importe)}</span>
-      <span style="font-size:11px;color:var(--gray-600)">${g.facturado}</span>
-      <span style="font-size:11px">${metodoLabel}</span>
-      <span style="font-size:11px;color:var(--gray-600)">${g.link?`<a href="${g.link}" target="_blank" style="color:var(--black);text-decoration:underline">Ver</a>`:'—'}</span>
-      <button class="remove-btn" onclick="eliminarVGasto(${g.id})">✕</button>
-    </div>`;
-  }).join('');
+  header.style.display='';totalRow.style.display='';let total=0;
+  list.innerHTML=vGastos.map(g=>{total+=g.importe;return `<div class="gasto-row"><span style="font-size:12px;color:var(--gray-600)">${formatDate(g.fecha)}</span><span><strong>${g.concepto}</strong>${g.comentarios?`<br><span style="font-size:11px;color:var(--gray-400)">${g.comentarios}</span>`:''}</span><span style="font-weight:700">$${fmt(g.importe)}</span><span style="font-size:11px;color:var(--gray-600)">${g.facturado}</span><span style="font-size:11px">${g.metodo==='REINTEGRO'?'🔄 Reintegro':'💰 Adelanto'}</span><span style="font-size:11px">${g.link?`<a href="${g.link}" target="_blank" style="color:var(--black);text-decoration:underline">Ver</a>`:'—'}</span><button class="remove-btn" onclick="eliminarVGasto(${g.id})">✕</button></div>`;}).join('');
   document.getElementById('vTotalARS').textContent='$'+fmt(total);
 }
 
-function handleVFileInput(input){handleFileUpload(input,f=>{vAttachedFile=f;document.getElementById('vFilePreview').style.display='flex';document.getElementById('vFileName').textContent=f.name;document.getElementById('vFileSize').textContent=formatFileSize(f.size);document.getElementById('vUploadZone').style.display='none';});}
-function handleVDrop(e){e.preventDefault();document.getElementById('vUploadZone').classList.remove('dragover');const f=e.dataTransfer.files[0];if(f){const dt=new DataTransfer();dt.items.add(f);document.getElementById('vFileInput').files=dt.files;handleVFileInput(document.getElementById('vFileInput'));}}
-function removeVFile(){vAttachedFile=null;document.getElementById('vFileInput').value='';document.getElementById('vFilePreview').style.display='none';document.getElementById('vUploadZone').style.display='';}
+window.handleVFileInput=function(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>5*1024*1024){showToast('El archivo supera los 5MB','error');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{vAttachedFile={name:file.name,size:file.size,type:file.type,data:e.target.result};document.getElementById('vFilePreview').style.display='flex';document.getElementById('vFileName').textContent=file.name;document.getElementById('vFileSize').textContent=formatFileSize(file.size);document.getElementById('vUploadZone').style.display='none';};
+  reader.readAsDataURL(file);
+};
+window.handleVDrop=function(e){e.preventDefault();document.getElementById('vUploadZone').classList.remove('dragover');const f=e.dataTransfer.files[0];if(f){const dt=new DataTransfer();dt.items.add(f);document.getElementById('vFileInput').files=dt.files;window.handleVFileInput(document.getElementById('vFileInput'));}}
+window.removeVFile=function(){vAttachedFile=null;document.getElementById('vFileInput').value='';document.getElementById('vFilePreview').style.display='none';document.getElementById('vUploadZone').style.display='';};
 
-function enviarViatico(){
-  const nombre=document.getElementById('v_nombre').value.trim(), area=document.getElementById('v_area').value,
-    fechas=document.getElementById('v_fechas').value.trim(), motivo=document.getElementById('v_motivo').value.trim(),
+window.enviarViatico=async function(){
+  const nombre=document.getElementById('v_nombre').value.trim(),area=document.getElementById('v_area').value,
+    fechas=document.getElementById('v_fechas').value.trim(),motivo=document.getElementById('v_motivo').value.trim(),
     obs=document.getElementById('vObs').value.trim();
   if(!nombre){showToast('Ingresá tu nombre y apellido','error');return;}
-  if(!area){showToast('Seleccioná el área de imputación','error');return;}
-  if(!fechas){showToast('Ingresá las fechas del viaje','error');return;}
+  if(!area){showToast('Seleccioná el área','error');return;}
+  if(!fechas){showToast('Ingresá las fechas','error');return;}
   if(!vGastos.length){showToast('Agregá al menos un gasto','error');return;}
   const km=parseFloat(document.getElementById('v_km').value)||0;
   const valorKm=parseFloat(document.getElementById('v_valorKm').value)||501.05;
   const kmImporte=km*valorKm;
   const totalGastos=vGastos.reduce((s,g)=>s+g.importe,0);
-  const totalARS=totalGastos+kmImporte;
-  rendiciones.push({
-    id:Date.now(), tipo:'viaticos', titular:nombre, area, fechasViaje:fechas, motivo,
-    gastos:[...vGastos], km, valorKm, kmImporte, totalGastos, totalARS,
-    adjunto:vAttachedFile, obs, estado:'pendiente',
-    fechaEnvio:new Date().toISOString(), comentarioAdmin:'', respuestaTitular:''
+  document.getElementById('vBtnEnviar').disabled=true;
+  document.getElementById('vSendingMsg').style.display='';
+  try{
+    await addDoc(collection(db,'rendiciones'),{
+      tipo:'viaticos',titular:nombre,area,fechasViaje:fechas,motivo,
+      gastos:[...vGastos],km,valorKm,kmImporte,totalGastos,totalARS:totalGastos+kmImporte,
+      adjunto:vAttachedFile,obs,estado:'pendiente',fechaEnvio:new Date().toISOString(),
+      comentarioAdmin:'',respuestaTitular:''
+    });
+    vGastos=[];vAttachedFile=null;renderVGastos();window.removeVFile();
+    ['v_nombre','v_fechas','v_motivo','vObs','v_km'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('v_area').value='';document.getElementById('kmResult').style.display='none';
+    showToast('Rendición enviada ✓','success');
+    window.switchTab('historial',document.querySelectorAll('.tab-btn')[1]);
+  }catch(e){showToast('Error al enviar: '+e.message,'error');}
+  document.getElementById('vBtnEnviar').disabled=false;
+  document.getElementById('vSendingMsg').style.display='none';
+};
+
+window.limpiarVForm=function(){vGastos=[];renderVGastos();window.removeVFile();['v_nombre','v_area','v_fechas','v_motivo','vObs','v_km'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('kmResult').style.display='none';};
+
+function iniciarHistorial(){
+  if(unsubscribe)unsubscribe();
+  unsubscribe=onSnapshot(query(collection(db,'rendiciones'),orderBy('fechaEnvio','desc')),(snap)=>{
+    todasRendiciones=snap.docs.map(d=>{const data=d.data();return{fbId:d.id,...data};}).filter(r=>r.tipo==='viaticos');
+    filtrarHistorial();
   });
-  saveRendiciones(); vGastos=[]; vAttachedFile=null; renderVGastos(); removeVFile();
-  ['v_nombre','v_fechas','v_motivo','vObs','v_km'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('v_area').value='';
-  document.getElementById('kmResult').style.display='none';
-  showToast('Rendición de viáticos enviada ✓','success');
-  switchTab('historial',document.querySelectorAll('.tab-btn')[1]);
 }
 
-function limpiarVForm(){vGastos=[];renderVGastos();removeVFile();['v_nombre','v_area','v_fechas','v_motivo','vObs','v_km'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('kmResult').style.display='none';}
-
-function renderVHistorial(){
-  reloadRendiciones();
+window.filtrarHistorial=function(){
   const nombre=(document.getElementById('buscarNombre').value||'').toLowerCase().trim();
-  const mias=rendiciones.filter(r=>r.tipo==='viaticos'&&(!nombre||r.titular.toLowerCase().includes(nombre))).slice().reverse();
+  const mias=todasRendiciones.filter(r=>!nombre||r.titular.toLowerCase().includes(nombre));
   const c=document.getElementById('vHistorialContainer');
   if(!mias.length){c.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><p>No se encontraron rendiciones.</p></div>';return;}
   c.innerHTML=mias.map(r=>`
@@ -383,10 +344,7 @@ function renderVHistorial(){
           <div style="font-size:14px;font-weight:700">${r.titular} <span style="font-size:12px;color:var(--gray-400);font-weight:400">· ${r.area}</span></div>
           <div style="font-size:12px;color:var(--gray-400);margin-top:2px">${r.fechasViaje} · ${r.motivo} · Enviado ${formatDatetime(r.fechaEnvio)}</div>
         </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <div style="font-size:16px;font-weight:800">$${fmt(r.totalARS)}</div>
-          ${badgeHTML(r.estado)}
-        </div>
+        <div style="display:flex;align-items:center;gap:12px"><div style="font-size:16px;font-weight:800">$${fmt(r.totalARS)}</div>${badgeHTML(r.estado)}</div>
       </div>
       ${r.comentarioAdmin?`
         <div style="padding:12px 20px;background:#FFF8E8;border-top:1px solid #F0D08C">
@@ -394,20 +352,16 @@ function renderVHistorial(){
           <div style="font-size:13px;color:#5a3c00">${r.comentarioAdmin}</div>
           ${r.respuestaTitular
             ?`<div style="margin-top:8px;padding:8px 12px;background:white;border-radius:6px;font-size:12px"><strong>Tu respuesta:</strong> ${r.respuestaTitular}</div>`
-            :`<div style="margin-top:10px;display:flex;gap:8px">
-                <input type="text" id="vresp_${r.id}" placeholder="Tu respuesta..." style="flex:1;font-size:13px;padding:7px 10px;border:1.5px solid #F0D08C;border-radius:6px">
-                <button class="btn btn-sm btn-primary" onclick="vResponder(${r.id})">Responder</button>
-              </div>`}
+            :`<div style="margin-top:10px;display:flex;gap:8px"><input type="text" id="vresp_${r.fbId}" placeholder="Tu respuesta..." style="flex:1;font-size:13px;padding:7px 10px;border:1.5px solid #F0D08C;border-radius:6px"><button class="btn btn-sm btn-primary" onclick="vResponder('${r.fbId}')">Responder</button></div>`}
         </div>`:''}
     </div>`).join('');
-}
+};
 
-function vResponder(id){
-  const texto=document.getElementById('vresp_'+id).value.trim();
+window.vResponder=async function(fbId){
+  const texto=document.getElementById('vresp_'+fbId).value.trim();
   if(!texto){showToast('Escribí tu respuesta','error');return;}
-  reloadRendiciones(); const r=rendiciones.find(x=>x.id===id);
-  if(r){r.respuestaTitular=texto;saveRendiciones();renderVHistorial();showToast('Respuesta enviada ✓','success');}
-}
+  try{await updateDoc(doc(db,'rendiciones',fbId),{respuestaTitular:texto});showToast('Respuesta enviada ✓','success');}catch(e){showToast('Error','error');}
+};
 
 renderVGastos();
 </script>

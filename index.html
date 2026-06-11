@@ -5,45 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Rendiciones — Granger S.A.</title>
 <style>
-  :root {
-    --black: #1A1A1A; --gray-50: #F8F8F8; --gray-100: #EEEEEE;
-    --gray-200: #DDDDDD; --gray-400: #999; --gray-600: #666;
-    --gray-800: #222; --white: #fff;
-    --shadow: 0 1px 4px rgba(0,0,0,0.08);
-    --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
-    --radius: 8px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--gray-50); min-height: 100vh; display: flex; flex-direction: column; }
-  .app-header {
-    background: white; padding: 0 32px; display: flex; align-items: center;
-    height: 60px; border-bottom: 1.5px solid var(--gray-200);
-    box-shadow: var(--shadow);
-  }
-  .app-header .logo { display: flex; align-items: center; gap: 14px; }
-  .app-header .logo img { height: 38px; width: auto; }
-  .app-header .logo-divider { width: 1px; height: 28px; background: var(--gray-200); }
-  .app-header .logo-subtitle { font-size: 13px; font-weight: 500; color: var(--gray-400); }
-
-  .hero {
-    flex: 1; display: flex; flex-direction: column; align-items: center;
-    justify-content: center; padding: 60px 20px;
-  }
-  .hero h1 { font-size: 28px; font-weight: 800; color: var(--black); margin-bottom: 10px; text-align: center; }
-  .hero p { font-size: 15px; color: var(--gray-600); margin-bottom: 48px; text-align: center; }
-
-  .cards { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
-  .option-card {
-    background: white; border-radius: 12px; box-shadow: var(--shadow-lg);
-    padding: 36px 32px; width: 280px; text-align: center; cursor: pointer;
-    transition: all 0.2s; border: 2px solid transparent; text-decoration: none; color: inherit;
-    display: flex; flex-direction: column; align-items: center; gap: 14px;
-  }
-  .option-card:hover { border-color: var(--black); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.14); }
-  .option-card .card-icon { font-size: 40px; }
-  .option-card h2 { font-size: 17px; font-weight: 800; color: var(--black); }
-  .option-card p { font-size: 13px; color: var(--gray-600); line-height: 1.5; }
-  .option-card .card-arrow { font-size: 20px; color: var(--gray-400); margin-top: 8px; }
+  :root { --black:#1A1A1A; --gray-50:#F8F8F8; --gray-100:#EEEEEE; --gray-200:#DDDDDD; --gray-400:#999; --gray-600:#666; --white:#fff; --shadow:0 1px 4px rgba(0,0,0,0.08); --shadow-lg:0 4px 16px rgba(0,0,0,0.12); --radius:8px; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',Arial,sans-serif; background:var(--gray-50); min-height:100vh; display:flex; flex-direction:column; }
+  .app-header { background:white; padding:0 32px; display:flex; align-items:center; height:60px; border-bottom:1.5px solid var(--gray-200); box-shadow:var(--shadow); }
+  .app-header .logo { display:flex; align-items:center; gap:14px; }
+  .app-header .logo img { height:38px; }
+  .app-header .logo-divider { width:1px; height:28px; background:var(--gray-200); }
+  .app-header .logo-subtitle { font-size:13px; font-weight:500; color:var(--gray-400); }
+  .hero { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; }
+  .hero h1 { font-size:28px; font-weight:800; color:var(--black); margin-bottom:10px; text-align:center; }
+  .hero p { font-size:15px; color:var(--gray-600); margin-bottom:48px; text-align:center; }
+  .cards { display:flex; gap:24px; flex-wrap:wrap; justify-content:center; }
+  .option-card { background:white; border-radius:12px; box-shadow:var(--shadow-lg); padding:36px 32px; width:280px; text-align:center; cursor:pointer; transition:all 0.2s; border:2px solid transparent; text-decoration:none; color:inherit; display:flex; flex-direction:column; align-items:center; gap:14px; }
+  .option-card:hover { border-color:var(--black); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.14); }
+  .option-card .card-icon { font-size:40px; }
+  .option-card h2 { font-size:17px; font-weight:800; color:var(--black); }
+  .option-card p { font-size:13px; color:var(--gray-600); line-height:1.5; }
+  .option-card .card-arrow { font-size:20px; color:var(--gray-400); margin-top:8px; }
 </style>
 </head>
 <body>
