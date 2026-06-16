@@ -113,6 +113,7 @@
   .type-viaticos { background: #444; color: white; }
   @media (max-width: 640px) { .form-grid, .form-grid.cols-3 { grid-template-columns: 1fr; } .stats-row { grid-template-columns: 1fr 1fr; } .detail-grid { grid-template-columns: 1fr; } }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 <header class="app-header">
@@ -143,7 +144,6 @@
       </div>
       <div class="form-group" style="margin-top:14px"><label>Motivo del viaje</label><input type="text" id="v_motivo" placeholder="Ej: Visita clientes Rosario"></div>
     </div>
-
     <div class="card">
       <div class="card-title"><div class="icon">📋</div> Detalle de gastos</div>
       <div id="vGastosHeader" class="gasto-header" style="display:none"><span>Fecha</span><span>Concepto</span><span>Importe</span><span>Facturado a</span><span>Método</span><span>Comentarios</span><span></span></div>
@@ -167,7 +167,6 @@
         <div style="margin-top:12px"><button class="btn btn-accent" onclick="agregarVGasto()">+ Agregar gasto</button></div>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title"><div class="icon">🚗</div> Vehículo propio (opcional)</div>
       <p style="font-size:13px;color:var(--gray-600);margin-bottom:14px">Completá solo si usaste tu vehículo personal.</p>
@@ -180,7 +179,6 @@
         <span id="kmImporte" style="font-size:15px;font-weight:800">$0</span>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title"><div class="icon">📎</div> Adjuntar comprobantes (opcional)</div>
       <p style="font-size:13px;color:var(--gray-600);margin-bottom:14px">Adjuntá tickets, facturas u otros comprobantes. Máx. 5MB.</p>
@@ -194,12 +192,10 @@
         <button class="remove-file" onclick="removeVFile()">✕</button>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title"><div class="icon">💬</div> Observaciones</div>
       <textarea id="vObs" placeholder="Cualquier aclaración adicional..."></textarea>
     </div>
-
     <div id="vSendingMsg" style="display:none;text-align:center;padding:12px;font-size:13px;color:var(--gray-600)">⏳ Enviando rendición...</div>
     <div style="display:flex;justify-content:flex-end;gap:12px;margin-top:8px">
       <button class="btn btn-ghost" onclick="limpiarVForm()">Limpiar</button>
@@ -222,6 +218,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
 import { getFirestore, collection, addDoc, doc, updateDoc, orderBy, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
 
+emailjs.init("jf6Oi8cC6ByyRQ8SN");
+
 const firebaseConfig = {
   apiKey: "AIzaSyCFHIU_4O-NiwFccMqZafLbRWndXmMBjX8",
   authDomain: "rendicion-gastos-6a46c.firebaseapp.com",
@@ -233,7 +231,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 let vGastos=[], vAttachedFile=null, todasRendiciones=[], unsubscribe=null;
 
 function fmt(n){return Number(n).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});}
@@ -242,6 +239,18 @@ function formatDatetime(iso){const d=new Date(iso);return d.toLocaleDateString('
 function formatFileSize(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB';}
 function badgeHTML(estado){const map={'pendiente':['badge-pending','● Pendiente'],'aprobado':['badge-approved','● Aprobado'],'con consulta':['badge-consulta','● Con consulta']};const[cls,label]=map[estado]||['badge-pending',estado];return `<span class="badge ${cls}">${label}</span>`;}
 function showToast(msg,type){const c=document.getElementById('toastContainer');const t=document.createElement('div');t.className='toast '+(type||'');t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3200);}
+
+async function enviarEmailNotificacion(titular, tipo, periodo, total, detalle){
+  try{
+    await emailjs.send("service_0mghs9h","oowdhr7",{
+      titular,tipo,periodo,total,detalle,
+      name:"Sistema Rendiciones Granger",
+      time:new Date().toLocaleString('es-AR'),
+      message:`Nueva rendición de ${titular} (${tipo}) por ${total}`,
+      email:"yvaroli@grangernutricion.com"
+    },"jf6Oi8cC6ByyRQ8SN");
+  }catch(e){console.error('Email error:',e);}
+}
 
 window.switchTab=function(tab,btn){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
@@ -303,15 +312,18 @@ window.enviarViatico=async function(){
   const valorKm=parseFloat(document.getElementById('v_valorKm').value)||501.05;
   const kmImporte=km*valorKm;
   const totalGastos=vGastos.reduce((s,g)=>s+g.importe,0);
+  const totalARS=totalGastos+kmImporte;
   document.getElementById('vBtnEnviar').disabled=true;
   document.getElementById('vSendingMsg').style.display='';
   try{
     await addDoc(collection(db,'rendiciones'),{
       tipo:'viaticos',titular:nombre,area,fechasViaje:fechas,motivo,
-      gastos:[...vGastos],km,valorKm,kmImporte,totalGastos,totalARS:totalGastos+kmImporte,
+      gastos:[...vGastos],km,valorKm,kmImporte,totalGastos,totalARS,
       adjunto:vAttachedFile,obs,estado:'pendiente',fechaEnvio:new Date().toISOString(),
       comentarioAdmin:'',respuestaTitular:''
     });
+    const detalle=vGastos.map(g=>`• ${formatDate(g.fecha)} — ${g.concepto}: $${fmt(g.importe)} (${g.metodo})`).join('\n')+(km>0?`\n• Kilometraje: ${km} km = $${fmt(kmImporte)}`:'' );
+    await enviarEmailNotificacion(nombre,'Viáticos',`${fechas} — ${motivo}`,'$'+fmt(totalARS),detalle);
     vGastos=[];vAttachedFile=null;renderVGastos();window.removeVFile();
     ['v_nombre','v_fechas','v_motivo','vObs','v_km'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('v_area').value='';document.getElementById('kmResult').style.display='none';

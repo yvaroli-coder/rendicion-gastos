@@ -113,6 +113,7 @@
   .type-viaticos { background: #444; color: white; }
   @media (max-width: 640px) { .form-grid, .form-grid.cols-3 { grid-template-columns: 1fr; } .stats-row { grid-template-columns: 1fr 1fr; } .detail-grid { grid-template-columns: 1fr; } }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 <header class="app-header">
@@ -183,7 +184,7 @@
       </div>
       <div class="card">
         <div class="card-title"><div class="icon">📎</div> Adjuntar comprobante (opcional)</div>
-        <p style="font-size:13px;color:var(--gray-600);margin-bottom:14px">Adjuntá el comprobante si lo tenés — resumen de tarjeta, factura o ticket. Máx. 5MB.</p>
+        <p style="font-size:13px;color:var(--gray-600);margin-bottom:14px">Adjuntá el comprobante si lo tenés. Máx. 5MB.</p>
         <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
           <div class="upload-icon">📎</div>
           <p><strong>Hacé clic</strong> o arrastrá el archivo aquí</p>
@@ -213,7 +214,9 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js";
-import { getFirestore, collection, addDoc, doc, updateDoc, query, where, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, doc, updateDoc, orderBy, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
+
+emailjs.init("{'publicKey': 'jf6Oi8cC6ByyRQ8SN'}");
 
 const firebaseConfig = {
   apiKey: "AIzaSyCFHIU_4O-NiwFccMqZafLbRWndXmMBjX8",
@@ -226,7 +229,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 const CATEGORIAS_ICON = {'Combustible/Peajes':'⛽','Alojamiento':'🏨','Comidas en viaje':'🍽️','Transporte urbano':'🚗','Servicios digitales':'💻','Otros':'📦'};
 let gastos=[], attachedFile=null, titularActual='', unsubscribe=null;
 
@@ -236,6 +238,18 @@ function formatDatetime(iso){const d=new Date(iso);return d.toLocaleDateString('
 function formatFileSize(b){if(b<1024)return b+' B';if(b<1048576)return(b/1024).toFixed(1)+' KB';return(b/1048576).toFixed(1)+' MB';}
 function badgeHTML(estado){const map={'pendiente':['badge-pending','● Pendiente'],'aprobado':['badge-approved','● Aprobado'],'con consulta':['badge-consulta','● Con consulta']};const[cls,label]=map[estado]||['badge-pending',estado];return `<span class="badge ${cls}">${label}</span>`;}
 function showToast(msg,type){const c=document.getElementById('toastContainer');const t=document.createElement('div');t.className='toast '+(type||'');t.textContent=msg;c.appendChild(t);setTimeout(()=>t.remove(),3200);}
+
+async function enviarEmailNotificacion(titular, tipo, periodo, total, detalle){
+  try{
+    await emailjs.send("service_0mghs9h","oowdhr7",{
+      titular,tipo,periodo,total,detalle,
+      name:"Sistema Rendiciones Granger",
+      time:new Date().toLocaleString('es-AR'),
+      message:`Nueva rendición de ${titular} (${tipo}) por ${total}`,
+      email:"yvaroli@grangernutricion.com"
+    },"jf6Oi8cC6ByyRQ8SN");
+  }catch(e){console.error('Email error:',e);}
+}
 
 window.elegirTitular=function(){
   titularActual=document.getElementById('titularSelect').value;
@@ -302,18 +316,22 @@ window.enviarRendicion=async function(){
   const sinComp=gastos.filter(g=>g.factura==='No').length;
   document.getElementById('btnEnviar').disabled=true;
   document.getElementById('sendingMsg').style.display='';
-  try {
+  try{
     await addDoc(collection(db,'rendiciones'),{
       tipo:'tarjeta',titular:titularActual,periodo,gastos:[...gastos],
       adjunto:attachedFile,obs,totalARS,totalUSD,sinComp,
       estado:'pendiente',fechaEnvio:new Date().toISOString(),
       comentarioAdmin:'',respuestaTitular:''
     });
+    // Notificación email
+    const detalle=gastos.map(g=>`• ${formatDate(g.fecha)} — ${g.desc}: ${g.moneda==='ARS'?'$':'USD '}${fmt(g.importe)} (${g.factura})`).join('\n');
+    const totalStr=`ARS $${fmt(totalARS)}${totalUSD>0?' + USD '+fmt(totalUSD):''}`;
+    await enviarEmailNotificacion(titularActual,'Tarjeta Corporativa',periodo,totalStr,detalle);
     gastos=[];attachedFile=null;renderGastos();window.removeFile();
     document.getElementById('obsGenerales').value='';
     showToast('Rendición enviada ✓','success');
     window.switchTab('historial',document.querySelectorAll('.tab-btn')[1]);
-  } catch(e){showToast('Error al enviar: '+e.message,'error');}
+  }catch(e){showToast('Error al enviar: '+e.message,'error');}
   document.getElementById('btnEnviar').disabled=false;
   document.getElementById('sendingMsg').style.display='none';
 };
@@ -322,10 +340,8 @@ window.limpiarForm=function(){gastos=[];renderGastos();window.removeFile();docum
 
 function iniciarHistorial(){
   if(unsubscribe)unsubscribe();
-  const q=query(collection(db,'rendiciones'),orderBy('fechaEnvio','desc'));
-  unsubscribe=onSnapshot(q,(snapshot)=>{
-    const todas=snapshot.docs.map(d=>{const data=d.data();return{fbId:d.id,...data};} );
-    const mias=todas.filter(r=>r.titular===titularActual&&r.tipo==='tarjeta');
+  unsubscribe=onSnapshot(query(collection(db,'rendiciones'),orderBy('fechaEnvio','desc')),(snap)=>{
+    const mias=snap.docs.map(d=>{const data=d.data();return{fbId:d.id,...data};}).filter(r=>r.titular===titularActual&&r.tipo==='tarjeta');
     renderHistorial(mias);
   });
 }
@@ -337,7 +353,7 @@ function renderHistorial(mias){
     <div class="rendicion-card">
       <div style="padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
         <div>
-          <div style="font-size:14px;font-weight:700;color:var(--black)">${r.periodo}</div>
+          <div style="font-size:14px;font-weight:700">${r.periodo}</div>
           <div style="font-size:12px;color:var(--gray-400);margin-top:2px">Enviado ${formatDatetime(r.fechaEnvio)} · ${r.gastos.length} gastos</div>
         </div>
         <div style="display:flex;align-items:center;gap:12px">

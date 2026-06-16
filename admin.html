@@ -112,6 +112,20 @@
   .type-tarjeta { background: #1A1A1A; color: white; }
   .type-viaticos { background: #444; color: white; }
   @media (max-width: 640px) { .form-grid, .form-grid.cols-3 { grid-template-columns: 1fr; } .stats-row { grid-template-columns: 1fr 1fr; } .detail-grid { grid-template-columns: 1fr; } }
+
+  .report-section { background:white; border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; margin-bottom:20px; }
+  .report-filters { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; align-items:flex-end; }
+  .report-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .report-table th { text-align:left; padding:8px 12px; font-size:11px; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:0.4px; border-bottom:2px solid var(--gray-100); background:var(--gray-50); }
+  .report-table td { padding:10px 12px; border-bottom:1px solid var(--gray-100); }
+  .report-table tr:last-child td { border-bottom:none; }
+  .report-table .td-amount { font-weight:700; text-align:right; color:var(--black); }
+  .report-table .tr-total { background:var(--gray-50); font-weight:700; }
+  .report-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px; }
+  .summary-box { background:var(--gray-50); border-radius:var(--radius); padding:16px; border:1.5px solid var(--gray-200); }
+  .summary-box .s-label { font-size:11px; font-weight:700; color:var(--gray-400); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; }
+  .summary-box .s-value { font-size:20px; font-weight:800; color:var(--black); }
+  .summary-box .s-sub { font-size:12px; color:var(--gray-400); margin-top:2px; }
 </style>
 </head>
 <body>
@@ -124,33 +138,76 @@
 </header>
 
 <div class="app-body">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
-    <h2 style="font-size:20px;font-weight:800;color:var(--black)">Panel de Administración</h2>
-    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-      <select id="filtroTipo" onchange="renderAdmin()" style="padding:7px 12px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:white">
-        <option value="">💳 + 🧳 Todos</option>
-        <option value="tarjeta">💳 Tarjeta corporativa</option>
-        <option value="viaticos">🧳 Viáticos</option>
-      </select>
-      <select id="filtroEstado" onchange="renderAdmin()" style="padding:7px 12px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:white">
-        <option value="">Todos los estados</option>
-        <option value="pendiente">Pendientes</option>
-        <option value="aprobado">Aprobados</option>
-        <option value="con consulta">Con consulta</option>
-      </select>
-      <select id="filtroTitular" onchange="renderAdmin()" style="padding:7px 12px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:white">
-        <option value="">Todos los titulares</option>
-        <option>Pablo Andr Rucci</option><option>Jonatan Claudi Rose</option><option>Carolina Anabel Roa</option>
-        <option>Rodrigo Yoel Sabena</option><option>Tomas Alej Giuliani</option><option>Maria Cecilia Ullua</option>
-        <option>Matias Navarro</option><option>Jose I. Lobos</option>
-      </select>
-    </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchAdminTab('rendiciones',this)">Rendiciones</button>
+    <button class="tab-btn" onclick="switchAdminTab('reporte',this)">📊 Reporte</button>
   </div>
 
-  <div class="stats-row" id="statsRow"></div>
-  <div id="adminList"></div>
-  <div id="adminEmpty" class="empty-state" style="display:none"><div class="empty-icon">📭</div><p>No hay rendiciones que coincidan con el filtro.</p></div>
-  <div id="adminLoading" class="empty-state"><div class="empty-icon">⏳</div><p>Cargando rendiciones...</p></div>
+  <!-- TAB RENDICIONES -->
+  <div id="tab-rendiciones">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <select id="filtroTipo" onchange="renderAdmin()" style="padding:7px 12px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:white">
+          <option value="">💳 + 🧳 Todos</option>
+          <option value="tarjeta">💳 Tarjeta corporativa</option>
+          <option value="viaticos">🧳 Viáticos</option>
+        </select>
+        <select id="filtroEstado" onchange="renderAdmin()" style="padding:7px 12px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:white">
+          <option value="">Todos los estados</option>
+          <option value="pendiente">Pendientes</option>
+          <option value="aprobado">Aprobados</option>
+          <option value="con consulta">Con consulta</option>
+        </select>
+        <select id="filtroTitular" onchange="renderAdmin()" style="padding:7px 12px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:white">
+          <option value="">Todos los titulares</option>
+          <option>Pablo Andr Rucci</option><option>Jonatan Claudi Rose</option><option>Carolina Anabel Roa</option>
+          <option>Rodrigo Yoel Sabena</option><option>Tomas Alej Giuliani</option><option>Maria Cecilia Ullua</option>
+          <option>Matias Navarro</option><option>Jose I. Lobos</option>
+        </select>
+      </div>
+    </div>
+    <div class="stats-row" id="statsRow"></div>
+    <div id="adminList"></div>
+    <div id="adminEmpty" class="empty-state" style="display:none"><div class="empty-icon">📭</div><p>No hay rendiciones que coincidan con el filtro.</p></div>
+    <div id="adminLoading" class="empty-state"><div class="empty-icon">⏳</div><p>Cargando rendiciones...</p></div>
+  </div>
+
+  <!-- TAB REPORTE -->
+  <div id="tab-reporte" style="display:none">
+    <div class="report-section">
+      <div style="font-size:15px;font-weight:700;color:var(--black);margin-bottom:16px">Filtros del reporte</div>
+      <div class="report-filters">
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="rTipo" onchange="generarReporte()" style="padding:8px 12px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:white">
+            <option value="">Todos</option>
+            <option value="tarjeta">💳 Tarjeta corporativa</option>
+            <option value="viaticos">🧳 Viáticos</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="rEstado" onchange="generarReporte()" style="padding:8px 12px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:white">
+            <option value="">Todos</option>
+            <option value="pendiente">Pendientes</option>
+            <option value="aprobado">Aprobados</option>
+            <option value="con consulta">Con consulta</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Persona</label>
+          <select id="rTitular" onchange="generarReporte()" style="padding:8px 12px;border:1.5px solid var(--gray-200);border-radius:6px;font-size:13px;background:white">
+            <option value="">Todas</option>
+            <option>Pablo Andr Rucci</option><option>Jonatan Claudi Rose</option><option>Carolina Anabel Roa</option>
+            <option>Rodrigo Yoel Sabena</option><option>Tomas Alej Giuliani</option><option>Maria Cecilia Ullua</option>
+            <option>Matias Navarro</option><option>Jose I. Lobos</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="exportarCSV()">⬇ Exportar CSV</button>
+      </div>
+    </div>
+    <div id="reporteContent"></div>
+  </div>
 </div>
 
 <div class="modal-overlay" id="modalConsulta">
@@ -184,7 +241,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 let todasRendiciones=[], expandedId=null, consultaTargetId=null;
 
 function fmt(n){return Number(n).toLocaleString('es-AR',{minimumFractionDigits:2,maximumFractionDigits:2});}
@@ -212,7 +268,13 @@ window.openBlob=function(fbId){
   try{const by=atob(r.adjunto.data.split(',')[1]);const ab=new ArrayBuffer(by.length);const ia=new Uint8Array(ab);for(let i=0;i<by.length;i++)ia[i]=by.charCodeAt(i);const blob=new Blob([ab],{type:r.adjunto.type});const url=URL.createObjectURL(blob);window.open(url,'_blank');setTimeout(()=>URL.revokeObjectURL(url),10000);}catch(e){showToast('Error','error');}
 };
 
-// Escuchar cambios en tiempo real
+window.switchAdminTab=function(tab,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('tab-rendiciones').style.display=tab==='rendiciones'?'':'none';
+  document.getElementById('tab-reporte').style.display=tab==='reporte'?'':'none';
+  if(tab==='reporte')generarReporte();
+};
+
 const q=query(collection(db,'rendiciones'),orderBy('fechaEnvio','desc'));
 onSnapshot(q,(snap)=>{
   todasRendiciones=snap.docs.map(d=>{const data=d.data();return{fbId:d.id,...data};});
@@ -266,7 +328,7 @@ window.renderAdmin=function(){
         ${r.obs?`<div class="detail-item" style="grid-column:1/-1"><div class="d-label">Observaciones</div><div class="d-value">${r.obs}</div></div>`:''}
       </div>
       <table class="mini-gastos"><thead><tr><th>Fecha</th><th>Concepto</th><th>Facturado a</th><th>Método</th><th>Comentarios</th><th style="text-align:right">Importe</th></tr></thead><tbody>
-        ${(r.gastos||[]).map(g=>`<tr><td style="font-size:12px;color:var(--gray-600)">${formatDate(g.fecha)}</td><td><strong>${g.concepto}</strong></td><td style="font-size:12px;color:var(--gray-600)">${g.facturado}</td><td style="font-size:12px">${g.metodo==='REINTEGRO'?'🔄 Reintegro':'💰 Adelanto'}</td><td style="font-size:12px;color:var(--gray-600)">${g.comentarios||'—'} ${g.link?`<a href="${g.link}" target="_blank" style="color:var(--black);text-decoration:underline">🔗</a>`:''}</td><td class="td-amount">$${fmt(g.importe)}</td></tr>`).join('')}
+        ${(r.gastos||[]).map(g=>`<tr><td style="font-size:12px;color:var(--gray-600)">${formatDate(g.fecha)}</td><td><strong>${g.concepto}</strong></td><td style="font-size:12px;color:var(--gray-600)">${g.facturado}</td><td style="font-size:12px">${g.metodo==='REINTEGRO'?'🔄 Reintegro':'💰 Adelanto'}</td><td style="font-size:12px;color:var(--gray-600)">${g.comentarios||'—'}</td><td class="td-amount">$${fmt(g.importe)}</td></tr>`).join('')}
         ${r.km>0?`<tr style="background:var(--gray-50)"><td colspan="5" style="font-size:12px;color:var(--gray-600);font-style:italic">Kilometraje (${r.km} km)</td><td class="td-amount">$${fmt(r.kmImporte)}</td></tr>`:''}
       </tbody></table>`;
     }
@@ -296,23 +358,114 @@ window.renderAdmin=function(){
 };
 
 window.toggleExpand=function(id){expandedId=expandedId===id?null:id;renderAdmin();};
-
-window.aprobar=async function(fbId){
-  try{await updateDoc(doc(db,'rendiciones',fbId),{estado:'aprobado'});showToast('Rendición aprobada ✓','success');}catch(e){showToast('Error','error');}
-};
-
+window.aprobar=async function(fbId){try{await updateDoc(doc(db,'rendiciones',fbId),{estado:'aprobado'});showToast('Aprobada ✓','success');}catch(e){showToast('Error','error');}};
 window.abrirConsulta=function(fbId){consultaTargetId=fbId;document.getElementById('consultaTexto').value='';document.getElementById('modalConsulta').classList.add('open');};
 window.closeModal=function(){document.getElementById('modalConsulta').classList.remove('open');consultaTargetId=null;};
-
 window.confirmarConsulta=async function(){
   const texto=document.getElementById('consultaTexto').value.trim();
   if(!texto){showToast('Escribí un mensaje','error');return;}
   try{await updateDoc(doc(db,'rendiciones',consultaTargetId),{comentarioAdmin:texto,estado:'con consulta',respuestaTitular:''});window.closeModal();showToast('Consulta enviada ✓','success');}catch(e){showToast('Error','error');}
 };
-
 window.eliminar=async function(fbId){
   if(!confirm('¿Eliminar esta rendición?'))return;
-  try{await deleteDoc(doc(db,'rendiciones',fbId));showToast('Rendición eliminada','');}catch(e){showToast('Error','error');}
+  try{await deleteDoc(doc(db,'rendiciones',fbId));showToast('Eliminada','');}catch(e){showToast('Error','error');}
+};
+
+// ---- REPORTE ----
+window.generarReporte=function(){
+  const tipo=document.getElementById('rTipo').value;
+  const estado=document.getElementById('rEstado').value;
+  const titular=document.getElementById('rTitular').value;
+  let datos=todasRendiciones;
+  if(tipo)datos=datos.filter(r=>r.tipo===tipo);
+  if(estado)datos=datos.filter(r=>r.estado===estado);
+  if(titular)datos=datos.filter(r=>r.titular===titular);
+
+  const totalARS=datos.reduce((s,r)=>s+(r.totalARS||0),0);
+  const totalUSD=datos.reduce((s,r)=>s+(r.totalUSD||0),0);
+  const totalRendiciones=datos.length;
+
+  // Agrupar por persona
+  const porPersona={};
+  datos.forEach(r=>{
+    if(!porPersona[r.titular])porPersona[r.titular]={rendiciones:0,totalARS:0,totalUSD:0};
+    porPersona[r.titular].rendiciones++;
+    porPersona[r.titular].totalARS+=r.totalARS||0;
+    porPersona[r.titular].totalUSD+=r.totalUSD||0;
+  });
+
+  const c=document.getElementById('reporteContent');
+  c.innerHTML=`
+    <div class="report-section">
+      <div class="report-summary">
+        <div class="summary-box"><div class="s-label">Total rendiciones</div><div class="s-value">${totalRendiciones}</div></div>
+        <div class="summary-box"><div class="s-label">Total ARS</div><div class="s-value">$${fmt(totalARS)}</div></div>
+        <div class="summary-box"><div class="s-label">Total USD</div><div class="s-value">USD ${fmt(totalUSD)}</div></div>
+      </div>
+
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--black)">Resumen por persona</div>
+      <table class="report-table">
+        <thead><tr><th>Persona</th><th>Rendiciones</th><th style="text-align:right">Total ARS</th><th style="text-align:right">Total USD</th></tr></thead>
+        <tbody>
+          ${Object.entries(porPersona).sort((a,b)=>b[1].totalARS-a[1].totalARS).map(([nombre,d])=>`
+            <tr><td style="font-weight:600">${nombre}</td><td>${d.rendiciones}</td><td class="td-amount">$${fmt(d.totalARS)}</td><td class="td-amount">${d.totalUSD>0?'USD '+fmt(d.totalUSD):'—'}</td></tr>
+          `).join('')}
+          <tr class="tr-total"><td>TOTAL</td><td>${totalRendiciones}</td><td class="td-amount">$${fmt(totalARS)}</td><td class="td-amount">${totalUSD>0?'USD '+fmt(totalUSD):'—'}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="report-section">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--black)">Detalle de rendiciones</div>
+      <table class="report-table">
+        <thead><tr><th>Fecha</th><th>Persona</th><th>Tipo</th><th>Período / Viaje</th><th>Estado</th><th style="text-align:right">Total ARS</th><th style="text-align:right">Total USD</th></tr></thead>
+        <tbody>
+          ${datos.map(r=>`<tr>
+            <td style="font-size:12px;color:var(--gray-600)">${new Date(r.fechaEnvio).toLocaleDateString('es-AR')}</td>
+            <td style="font-weight:600">${r.titular}</td>
+            <td>${r.tipo==='tarjeta'?'💳 Tarjeta':'🧳 Viáticos'}</td>
+            <td style="font-size:12px">${r.tipo==='tarjeta'?r.periodo:(r.fechasViaje+' — '+r.motivo)}</td>
+            <td>${badgeHTML(r.estado)}</td>
+            <td class="td-amount">$${fmt(r.totalARS||0)}</td>
+            <td class="td-amount">${(r.totalUSD||0)>0?'USD '+fmt(r.totalUSD):'—'}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+};
+
+window.exportarCSV=function(){
+  const tipo=document.getElementById('rTipo').value;
+  const estado=document.getElementById('rEstado').value;
+  const titular=document.getElementById('rTitular').value;
+  let datos=todasRendiciones;
+  if(tipo)datos=datos.filter(r=>r.tipo===tipo);
+  if(estado)datos=datos.filter(r=>r.estado===estado);
+  if(titular)datos=datos.filter(r=>r.titular===titular);
+
+  const rows=[['Fecha','Persona','Tipo','Período/Viaje','Motivo','Estado','Total ARS','Total USD']];
+  datos.forEach(r=>{
+    rows.push([
+      new Date(r.fechaEnvio).toLocaleDateString('es-AR'),
+      r.titular,
+      r.tipo==='tarjeta'?'Tarjeta Corporativa':'Viáticos',
+      r.tipo==='tarjeta'?(r.periodo||''):(r.fechasViaje||''),
+      r.tipo==='tarjeta'?'':(r.motivo||''),
+      r.estado,
+      (r.totalARS||0).toFixed(2).replace('.',','),
+      (r.totalUSD||0).toFixed(2).replace('.',',')
+    ]);
+  });
+
+  const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(';')).join('\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download='reporte_rendiciones_granger.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('CSV exportado ✓','success');
 };
 </script>
 </body>
